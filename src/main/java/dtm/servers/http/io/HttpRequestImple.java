@@ -1,7 +1,7 @@
 package dtm.servers.http.io;
 
+import java.net.InetSocketAddress;
 import java.util.Map;
-
 import dtm.servers.http.core.HttpServerRequest;
 import dtm.servers.http.core.HttpSession;
 import lombok.Data;
@@ -15,6 +15,7 @@ class HttpRequestImple implements HttpServerRequest{
     private String protocol;
     private Map<String, String> headers;
     private HttpSession session;
+    private InetSocketAddress inetSocketAddress;
 
     @Override
     public String getHeader(String key) {

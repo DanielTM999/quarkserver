@@ -74,7 +74,9 @@ public class ClienteConnectionHandler<T> implements CompletionHandler<Asynchrono
             isPayloadSizeExceeded(request.getBytes());
             SocketAddress remoteAddress = clientChannel.getRemoteAddress();
             String ip = "unknow";
-            if (remoteAddress instanceof InetSocketAddress inetSocketAddress){
+            InetSocketAddress inetSocketAddress = null;
+            if (remoteAddress instanceof InetSocketAddress inetSocketAddressCasting){
+                inetSocketAddress = inetSocketAddressCasting;
                 ip = inetSocketAddress.getAddress().getHostAddress();
             }
             allowedIp(ip);
@@ -87,7 +89,7 @@ public class ClienteConnectionHandler<T> implements CompletionHandler<Asynchrono
             }
 
             this.routeExecutor.execute(HttpConnectionImple.builder()
-                .request(buildRequest(request, ip))
+                .request(buildRequest(request, ip, inetSocketAddress))
                 .response(response)
                 .build()
             );
@@ -101,7 +103,7 @@ public class ClienteConnectionHandler<T> implements CompletionHandler<Asynchrono
         }
     }
 
-    private HttpServerRequest buildRequest(String request, String ip) throws Exception{
+    private HttpServerRequest buildRequest(String request, String ip, InetSocketAddress inetSocketAddress) throws Exception{
         try {
             HttpRequestImple httpRequest = new HttpRequestImple();
 
@@ -135,7 +137,8 @@ public class ClienteConnectionHandler<T> implements CompletionHandler<Asynchrono
             }
             httpRequest.setBody(body.toString().trim());
     
-    
+            httpRequest.setInetSocketAddress(inetSocketAddress);
+            
             SessionStorageServer storageServer = SessionStorageServer.getInstance();
             HttpSession session;
             if(storageServer.containsSession(ip)){

@@ -1,5 +1,6 @@
 package dtm.servers.http.core;
 
+import java.net.InetSocketAddress;
 import java.util.Map;
 
 public interface HttpServerRequest {
@@ -10,4 +11,5 @@ public interface HttpServerRequest {
     String getHeader(String key);
     String getBody();
     HttpSession getSession();
+    InetSocketAddress getInetSocketAddress();
 }
